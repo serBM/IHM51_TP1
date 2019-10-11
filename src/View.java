@@ -41,7 +41,7 @@ public class View {
 		});
 
 		JLabel textDistA = new JLabel("Distance to A", JLabel.CENTER);
-		JSlider slidDistA = new JSlider(0, 100);
+		RangeSlider slidDistA = new RangeSlider(0, 0, 10, 5, 7);
 		JLabel textDistB = new JLabel("Distance to B", JLabel.CENTER);
 		JSlider slidDistB = new JSlider(0, 100);
 		JLabel textBedroom = new JLabel("Bedroom", JLabel.CENTER);

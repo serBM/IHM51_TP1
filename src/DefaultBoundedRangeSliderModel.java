@@ -32,10 +32,12 @@ public class DefaultBoundedRangeSliderModel implements BoundedRangeModel {
 		return this.min;
 	}
 
-	@Override
-	public void setMinimum(int newMinimum) {
-		this.min = newMinimum;
 
+	@Override
+	public void setMinimum(int n) {
+		int newMax = Math.max(n, max);
+		int newValue = Math.max(n, value);
+		int newUpperValue = Math.max(n, upperValue);
 	}
 
 	@Override
@@ -44,9 +46,10 @@ public class DefaultBoundedRangeSliderModel implements BoundedRangeModel {
 	}
 
 	@Override
-	public void setMaximum(int newMaximum) {
-		this.max = newMaximum;
-
+	public void setMaximum(int n) {
+		int newMin = Math.min(n, min);
+		int newValue = Math.min(n, value);
+		int newUpperValue = Math.min(n, upperValue);
 	}
 
 	@Override
@@ -55,9 +58,12 @@ public class DefaultBoundedRangeSliderModel implements BoundedRangeModel {
 	}
 
 	@Override
-	public void setValue(int newValue) {
-		this.value = newValue;
+	public void setValue(int n) {
+		n = Math.min(n, Integer.MAX_VALUE - extent);
 
+		int newValue = Math.max(n, min);
+		if (newValue + extent > upperValue)
+			newValue = upperValue - extent;
 	}
 
 	@Override
@@ -77,9 +83,29 @@ public class DefaultBoundedRangeSliderModel implements BoundedRangeModel {
 	}
 
 	@Override
-	public void setExtent(int newExtent) {
-		this.extent = newExtent;
+	public void setExtent(int n) {
+		int newExtent = Math.max(0, n);
+		if (value + newExtent > upperValue)
+			newExtent = upperValue - value;
+	}
+	
 
+	public int getUpperValue() {
+		return this.upperValue;
+	}
+	
+	public void setUpperValue(int n) {
+		n = Math.min(n, Integer.MAX_VALUE - upperExtent);
+
+		int newValue = Math.max(n, min);
+		if (newValue + upperExtent > max)
+			newValue = max - upperExtent;
+	}
+	
+	public void setUpperExtent(int n) {
+		int newExtent = Math.max(0, n);
+		if (upperValue + newExtent > max)
+			newExtent = max - upperValue;
 	}
 
 	@Override

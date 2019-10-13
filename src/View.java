@@ -1,11 +1,15 @@
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JSlider;
 import javax.swing.JSplitPane;
+import javax.swing.SwingConstants;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 public class View {
 	public View() {
@@ -41,7 +45,14 @@ public class View {
 		});
 
 		JLabel textDistA = new JLabel("Distance to A", JLabel.CENTER);
-		RangeSlider slidDistA = new RangeSlider(0, 0, 10, 5, 7);
+		RangeSlider rangSlid = new RangeSlider(SwingConstants.HORIZONTAL,0, 10, 5, 7);
+		rangSlid.addChangeListener(new ChangeListener() {
+
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				System.out.println("low : "+rangSlid.getValue());
+			}
+		});
 		JLabel textDistB = new JLabel("Distance to B", JLabel.CENTER);
 		JSlider slidDistB = new JSlider(0, 100);
 		JLabel textBedroom = new JLabel("Bedroom", JLabel.CENTER);

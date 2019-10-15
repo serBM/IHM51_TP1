@@ -1,15 +1,18 @@
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 
 import javax.swing.JComponent;
 import javax.swing.JSlider;
+import javax.swing.SwingUtilities;
 import javax.swing.plaf.ComponentUI;
 import javax.swing.plaf.basic.BasicSliderUI;
 
 public class RangeSliderUI extends BasicSliderUI {
 
 	private Rectangle upperThumb;
+	private Rectangle unionRect;
 
 	public RangeSliderUI(JSlider b) {
 		super(b);
@@ -22,12 +25,14 @@ public class RangeSliderUI extends BasicSliderUI {
 	@Override
 	public void installUI(JComponent c) {
 		this.upperThumb = new Rectangle();
+		this.unionRect = new Rectangle();
 		super.installUI(c);
 	}
 
 	@Override
 	public void uninstallUI(JComponent c) {
 		this.upperThumb = null;
+        this.unionRect = null;
 		super.uninstallUI(c);
 	}
 
@@ -38,12 +43,19 @@ public class RangeSliderUI extends BasicSliderUI {
 
 	@Override
 	protected void calculateThumbSize() {
-		// TODO
+        Dimension size = getThumbSize();
+        thumbRect.setSize(size.width, size.height);
+        upperThumb.setSize(size.width, size.height);
 	}
 
 	@Override
 	protected void calculateThumbLocation() {
-		// TODO
+        super.calculateThumbLocation();
+
+        int valuePosition = xPositionForValue(((RangeSlider) slider).getUpperValue());
+
+        upperThumb.x = valuePosition - upperThumb.width / 2;
+        upperThumb.y = trackRect.y;
 	}
 
 	@Override
@@ -94,7 +106,12 @@ public class RangeSliderUI extends BasicSliderUI {
 	}
 
 	public void setUpperThumbLocation(int x, int y) {
-		//TODO
+        unionRect.setBounds(upperThumb);
+
+        upperThumb.setLocation(x, y);
+
+        SwingUtilities.computeUnion(upperThumb.x, upperThumb.y, upperThumb.width, upperThumb.height, unionRect);
+        slider.repaint(unionRect.x, unionRect.y, unionRect.width, unionRect.height);
 	}
 
 }

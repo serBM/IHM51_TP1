@@ -40,7 +40,7 @@ public class RangeSliderUI extends BasicSliderUI {
 
 	@Override
 	protected TrackListener createTrackListener(JSlider slider) {
-		return null;
+		return new RangeTrackListener();
 	}
 
 	@Override

@@ -12,9 +12,9 @@ public class DefaultBoundedRangeSliderModel implements BoundedRangeModel {
 	private int min = 0;
 	private int max = 100;
 	private boolean isAdjusting = false;
-	
+
 	protected EventListenerList listenerList = new EventListenerList();
-	
+
 	protected transient ChangeEvent changeEvent = null;
 
 	public DefaultBoundedRangeSliderModel() {
@@ -37,7 +37,6 @@ public class DefaultBoundedRangeSliderModel implements BoundedRangeModel {
 	public int getMinimum() {
 		return this.min;
 	}
-
 
 	@Override
 	public void setMinimum(int n) {
@@ -101,12 +100,11 @@ public class DefaultBoundedRangeSliderModel implements BoundedRangeModel {
 			newExtent = upperValue - value;
 		setRangeProperties(value, newExtent, upperValue, upperExtent, min, max, isAdjusting);
 	}
-	
 
 	public int getUpperValue() {
 		return this.upperValue;
 	}
-	
+
 	public void setUpperValue(int n) {
 		n = Math.min(n, Integer.MAX_VALUE - upperExtent);
 
@@ -115,7 +113,7 @@ public class DefaultBoundedRangeSliderModel implements BoundedRangeModel {
 			newValue = max - upperExtent;
 		setRangeProperties(value, extent, newValue, upperExtent, min, max, isAdjusting);
 	}
-	
+
 	public void setUpperExtent(int n) {
 		int newExtent = Math.max(0, n);
 		if (upperValue + newExtent > max)
@@ -125,13 +123,8 @@ public class DefaultBoundedRangeSliderModel implements BoundedRangeModel {
 
 	@Override
 	public void setRangeProperties(int value, int extent, int min, int max, boolean adjusting) {
-		this.value = value;
-		this.extent = extent;
-		this.min = min;
-		this.max = max;
-		this.isAdjusting = adjusting;
 	}
-	
+
 	public int getUpperExtent() {
 		return upperExtent;
 	}
@@ -145,7 +138,7 @@ public class DefaultBoundedRangeSliderModel implements BoundedRangeModel {
 	public void removeChangeListener(ChangeListener l) {
 		listenerList.remove(ChangeListener.class, l);
 	}
-	
+
 	public void setRangeProperties(int newValue, int newExtent, int newUpperValue, int newUpperExtent, int newMin,
 			int newMax, boolean adjusting) {
 		if (newMin > newMax)
@@ -182,7 +175,6 @@ public class DefaultBoundedRangeSliderModel implements BoundedRangeModel {
 			fireStateChanged();
 		}
 	}
-	
 
 	protected void fireStateChanged() {
 		Object[] listeners = listenerList.getListenerList();

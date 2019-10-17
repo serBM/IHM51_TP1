@@ -137,15 +137,13 @@ public class DefaultBoundedRangeSliderModel implements BoundedRangeModel {
 	}
 
 	@Override
-	public void addChangeListener(ChangeListener x) {
-		// TODO Auto-generated method stub
-
+	public void addChangeListener(ChangeListener l) {
+		listenerList.add(ChangeListener.class, l);
 	}
 
 	@Override
-	public void removeChangeListener(ChangeListener x) {
-		// TODO Auto-generated method stub
-
+	public void removeChangeListener(ChangeListener l) {
+		listenerList.remove(ChangeListener.class, l);
 	}
 	
 	public void setRangeProperties(int newValue, int newExtent, int newUpperValue, int newUpperExtent, int newMin,

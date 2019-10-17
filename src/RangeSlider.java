@@ -3,6 +3,8 @@ import javax.swing.SwingConstants;
 
 @SuppressWarnings("serial")
 public class RangeSlider extends JSlider {
+	
+    public static String ACCESSIBLE_UPPER_VALUE_PROPERTY = "upper_value_property";
 
 	public RangeSlider(int orientation, int min, int max, int value, int upperValue) {
 		this.orientation = SwingConstants.HORIZONTAL;
@@ -32,7 +34,19 @@ public class RangeSlider extends JSlider {
     };
 
     public void setUpperValue(int n) {
+    	DefaultBoundedRangeSliderModel m = (DefaultBoundedRangeSliderModel) getModel();
+        int oldValue = m.getUpperValue();
+        if (oldValue == n)
+            return;
+        m.setUpperValue(n);
 
+        if (accessibleContext != null)
+            accessibleContext.firePropertyChange(RangeSlider.ACCESSIBLE_UPPER_VALUE_PROPERTY, Integer.valueOf(oldValue),
+                    Integer.valueOf(m.getUpperValue()));
     };
+    
+    public int getUpperExtent() {
+        return ((DefaultBoundedRangeSliderModel) getModel()).getUpperExtent();
+    }
 
 }

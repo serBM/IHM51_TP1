@@ -2,10 +2,12 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Rectangle;
+import java.awt.event.MouseEvent;
 
 import javax.swing.JComponent;
 import javax.swing.JSlider;
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 import javax.swing.plaf.ComponentUI;
 import javax.swing.plaf.basic.BasicSliderUI;
 
@@ -113,5 +115,134 @@ public class RangeSliderUI extends BasicSliderUI {
         SwingUtilities.computeUnion(upperThumb.x, upperThumb.y, upperThumb.width, upperThumb.height, unionRect);
         slider.repaint(unionRect.x, unionRect.y, unionRect.width, unionRect.height);
 	}
+	
+	private class RangeTrackListener extends TrackListener {
+        private boolean isDraggingLower;
+        private boolean isDraggingUpper;
+
+        public RangeTrackListener() {
+            super();
+            isDraggingLower = false;
+            isDraggingUpper = false;
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent e) {
+            if (!slider.isEnabled())
+                return;
+
+            offset = 0;
+            scrollTimer.stop();
+
+            isDraggingLower = false;
+            isDraggingUpper = false;
+
+            slider.setValueIsAdjusting(false);
+            slider.repaint();
+        }
+
+        @Override
+        public void mousePressed(MouseEvent e) {
+            if (!slider.isEnabled())
+                return;
+
+            calculateGeometry();
+
+            currentMouseX = e.getX();
+            currentMouseY = e.getY();
+
+            if (slider.isRequestFocusEnabled())
+                slider.requestFocus();
+
+            if (thumbRect.contains(currentMouseX, currentMouseY)) {
+                if (UIManager.getBoolean("Slider.onlyLeftMouseButtonDrag") && !SwingUtilities.isLeftMouseButton(e))
+                    return;
+
+                offset = currentMouseX - thumbRect.x;
+
+                isDraggingLower = true;
+                isDraggingUpper = false;
+                return;
+            }
+
+            if (upperThumb.contains(currentMouseX, currentMouseY)) {
+                if (UIManager.getBoolean("Slider.onlyLeftMouseButtonDrag") && !SwingUtilities.isLeftMouseButton(e))
+                    return;
+
+                offset = currentMouseX - upperThumb.x;
+
+                isDraggingLower = false;
+                isDraggingUpper = true;
+                return;
+            }
+
+            if (!SwingUtilities.isLeftMouseButton(e))
+                return;
+
+            isDraggingLower = false;
+            isDraggingUpper = false;
+        }
+
+        @Override
+        public void mouseDragged(MouseEvent e) {
+            int thumbMiddle;
+
+            if (!slider.isEnabled())
+                return;
+
+            currentMouseX = e.getX();
+            currentMouseY = e.getY();
+
+            if (isDraggingLower) {
+                slider.setValueIsAdjusting(true);
+
+                int halfThumbWidth = thumbRect.width / 2;
+                int thumbLeft = e.getX() - offset;
+                int trackLeft = trackRect.x;
+                int trackRight = trackRect.x + trackRect.width - 1;
+                int hMax = xPositionForValue(slider.getMaximum() - slider.getExtent());
+
+                if (drawInverted())
+                    trackLeft = hMax;
+                else
+                    trackRight = hMax;
+                thumbLeft = Math.max(thumbLeft, trackLeft - halfThumbWidth);
+                thumbLeft = Math.min(thumbLeft, trackRight - halfThumbWidth);
+
+                thumbMiddle = thumbLeft + halfThumbWidth;
+                int thumbRight = thumbLeft + thumbRect.width;
+
+                if (valueForXPosition(thumbRight) < ((RangeSlider) slider).getUpperValue()) {
+                    setThumbLocation(thumbLeft, thumbRect.y);
+                    slider.setValue(valueForXPosition(thumbMiddle));
+                }
+            }
+
+            if (isDraggingUpper) {
+                slider.setValueIsAdjusting(true);
+
+                int halfThumbWidth = upperThumb.width / 2;
+                int thumbLeft = e.getX() - offset;
+                int trackLeft = trackRect.x;
+                int trackRight = trackRect.x + trackRect.width - 1;
+                int hMax = xPositionForValue(slider.getMaximum() - ((RangeSlider) slider).getUpperExtent());
+
+                if (drawInverted())
+                    trackLeft = hMax;
+                else
+                    trackRight = hMax;
+                thumbLeft = Math.max(thumbLeft, trackLeft - halfThumbWidth);
+                thumbLeft = Math.min(thumbLeft, trackRight - halfThumbWidth);
+
+                thumbMiddle = thumbLeft + halfThumbWidth;
+
+                if (valueForXPosition(thumbLeft) > slider.getValue()) {
+                    setUpperThumbLocation(thumbLeft, upperThumb.y);
+                    ((RangeSlider) slider).setUpperValue(valueForXPosition(thumbMiddle));
+                }
+            }
+        }
+
+    }
 
 }

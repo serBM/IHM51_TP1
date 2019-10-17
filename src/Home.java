@@ -1,14 +1,24 @@
+import java.awt.Graphics;
 
-public class Home {
+@SuppressWarnings("serial")
+public class Home extends MapArea {
 
 	private String name;
-	private float xCoordinate;
-	private float yCoordinate;
+	private int xCoordinate;
+	private int yCoordinate;
 	private int nbRoom;
 	private int price;
 	
+	@Override
+	public void paintComponent(Graphics g) {
+		
+			g.drawRect(xCoordinate, yCoordinate, 10, 10);
+			g.drawLine(xCoordinate-5, yCoordinate+5, xCoordinate+5, yCoordinate-5);
+			g.drawLine(xCoordinate+5, yCoordinate-5, xCoordinate+15, yCoordinate+5);
+		
+	}
 
-	public Home(String name, float xCoordinate, float yCoordinate, int nbRoom, int price) {
+	public Home(String name, int xCoordinate, int yCoordinate, int nbRoom, int price) {
 		this.name = name;
 		this.xCoordinate = xCoordinate;
 		this.yCoordinate = yCoordinate ;
@@ -16,11 +26,11 @@ public class Home {
 		this.price = price;
 	}
 
-	public float getyCoordinate() {
+	public int getyCoordinate() {
 		return yCoordinate;
 	}
 
-	public float getxCoordinate() {
+	public int getxCoordinate() {
 		return xCoordinate;
 	}
 

@@ -1,17 +1,24 @@
 import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.HashMap;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JSlider;
 import javax.swing.JSplitPane;
 import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 public class View {
+	
+	RangeSlider slidDistA, slidDistB, slidBedroom, slidCost;
+	HashMap<Integer, Home> listHome = new HashMap<>();
+	int nHome = 10;
+	
 	public View() {
 
 		// Create views swing UI components
@@ -45,37 +52,27 @@ public class View {
 		});
 
 		JLabel textDistA = new JLabel("Distance to A", JLabel.CENTER);
-		RangeSlider rangSlid = new RangeSlider(SwingConstants.HORIZONTAL,0, 10, 5, 7);
-		rangSlid.addChangeListener(new ChangeListener() {
+		RangeSlider slidDistA = new RangeSlider(SwingConstants.HORIZONTAL, 0, 100, 25, 75);
+		slidDistA.addChangeListener(new ChangeListener() {
 
 			@Override
 			public void stateChanged(ChangeEvent e) {
-				System.out.println("low : "+rangSlid.getValue());
+				System.out.println("low : "+slidDistA.getValue());
 			}
 		});
 		JLabel textDistB = new JLabel("Distance to B", JLabel.CENTER);
-		JSlider slidDistB = new JSlider(0, 100);
+		slidDistB = new RangeSlider(SwingConstants.HORIZONTAL, 0, 100, 25, 75);
 		JLabel textBedroom = new JLabel("Bedroom", JLabel.CENTER);
-		JSlider slidBedroom = new JSlider(0, 100);
+		slidBedroom = new RangeSlider(SwingConstants.HORIZONTAL, 0, 100, 25, 75);
 		JLabel textCost = new JLabel("Cost", JLabel.CENTER);
-		JSlider slidCost = new JSlider(0, 100);
-		// Create controller
-		// Controller controller = new Controller(searchTermTextField, model);
-		// filterButton.addActionListener(controller);
-
-		// Set the view layout
-		/*
-		 * JPanel ctrlPane = new JPanel(); ctrlPane.add(searchTermTextField);
-		 * ctrlPane.add(quitButton); ctrlPane.add(saveButton);
-		 * ctrlPane.add(printButton);
-		 */
+		slidCost = new RangeSlider(SwingConstants.HORIZONTAL, 0, 100, 25, 75);
 
 		JSplitPane splitButtonR = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, resetButton, quitButton);
 		JSplitPane splitButtonL = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, saveButton, printButton);
 
 		JSplitPane splitButton = new JSplitPane(JSplitPane.VERTICAL_SPLIT, splitButtonR, splitButtonL);
 
-		JSplitPane splitDistA = new JSplitPane(JSplitPane.VERTICAL_SPLIT, textDistA, rangSlid);
+		JSplitPane splitDistA = new JSplitPane(JSplitPane.VERTICAL_SPLIT, textDistA, slidDistA);
 		JSplitPane splitDistB = new JSplitPane(JSplitPane.VERTICAL_SPLIT, textDistB, slidDistB);
 		JSplitPane splitBedroom = new JSplitPane(JSplitPane.VERTICAL_SPLIT, textBedroom, slidBedroom);
 		JSplitPane splitCost = new JSplitPane(JSplitPane.VERTICAL_SPLIT, textCost, slidCost);
@@ -90,13 +87,23 @@ public class View {
 
 		
 
-		JLabel test = new JLabel("test", JLabel.CENTER);
+		MapArea map = new MapArea();
+		map.setPreferredSize(new Dimension(400, 400));
+		map.setLayout(new GridLayout(1, 1));
+		
+		for (int i = 0; i < nHome; i++) {
+			listHome.put(i, new Home("Maison " + i, (int) (Math.random()*400), (int) (Math.random()*400), (int) (Math.random()*10), (int) (Math.random()*10000)));
+
+			map.setLayout(new GridLayout(1, 1));
+			map.add(listHome.get(i));
+		}
+		
 		// Display it all in a scrolling window and make the window appear
 		JFrame frame = new JFrame("TP1");
 		frame.setLayout(new BorderLayout());
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().add(splitLateral, BorderLayout.EAST);
-		frame.getContentPane().add(test, BorderLayout.WEST);
+		frame.getContentPane().add(map, BorderLayout.WEST);
 		frame.pack();
 		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);

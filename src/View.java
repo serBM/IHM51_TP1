@@ -22,7 +22,19 @@ public class View {
 	RangeSlider slidDistA, slidDistB, slidBedroom, slidCost;
 	HashMap<Integer, Home> listHome = new HashMap<>();
 	int nHome = 10;
-
+	int rangeMax = 9;
+	int rangeMin = 0;
+	int rangeLowDef = 3;
+	int rangeUpDef = 7;
+	JSlider slidDist1;
+	JSlider slidDist2;
+	JLabel label1Range1;
+	JLabel label2Range1;
+	RangeSlider slidBed;
+	JSplitPane splitBedroom;
+	JLabel label1Range2;
+	JLabel label2Range2;
+	
 	public View() {
 
 		// Create views swing UI components
@@ -56,25 +68,44 @@ public class View {
 		});
 
 		JSplitPane splitButtonR = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, resetButton, quitButton);
+		splitButtonR.setResizeWeight(.5d);
 		JSplitPane splitButtonL = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, saveButton, printButton);
+		splitButtonL.setResizeWeight(.5d);
 		JSplitPane splitButton = new JSplitPane(JSplitPane.VERTICAL_SPLIT, splitButtonR, splitButtonL);
 		
 	
 		JLabel textDistA = new JLabel("Distance to A", JLabel.CENTER);
-		JSlider slidDist1 = new JSlider();
+		slidDist1 = new JSlider();
+		JLabel dist1Lab = new JLabel("50", JLabel.CENTER);
+		slidDist1.addChangeListener(new ChangeListener() {
+			
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				dist1Lab.setText(slidDist1.getValue()+"");
+			}
+		});
 
 		
 		JLabel textDistB = new JLabel("Distance to B", JLabel.CENTER);
-		JSlider slidDist2 = new JSlider();
+		slidDist2 = new JSlider();
+		JLabel dist2Lab = new JLabel("50", JLabel.CENTER);
+		slidDist2.addChangeListener(new ChangeListener() {
+			
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				dist2Lab.setText(slidDist2.getValue()+"");
+			}
+		});
 		
-
-		JSplitPane splitDistA = new JSplitPane(JSplitPane.VERTICAL_SPLIT, textDistA, slidDist1);
-		JSplitPane splitDistB = new JSplitPane(JSplitPane.VERTICAL_SPLIT, textDistB, slidDist2);
+		JSplitPane splitDistA1 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, dist1Lab, slidDist1);
+		JSplitPane splitDistA = new JSplitPane(JSplitPane.VERTICAL_SPLIT, textDistA, splitDistA1);
+		JSplitPane splitDistB1 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, dist2Lab, slidDist2);
+		JSplitPane splitDistB = new JSplitPane(JSplitPane.VERTICAL_SPLIT, textDistB, splitDistB1);
 		
 		JLabel textBedroom = new JLabel("Bedroom", JLabel.CENTER);
-		JLabel label1Range1 = new JLabel("3", JLabel.CENTER);
-		JLabel label2Range1 = new JLabel("7", JLabel.CENTER);
-		RangeSlider slidBed = new RangeSlider(SwingConstants.HORIZONTAL, 0, 9, 3, 7);
+		label1Range1 = new JLabel(rangeLowDef+"", JLabel.CENTER);
+		label2Range1 = new JLabel(rangeUpDef+"", JLabel.CENTER);
+		slidBed = new RangeSlider(SwingConstants.HORIZONTAL, rangeMin, rangeMax, rangeLowDef, rangeUpDef);
 		slidBed.addChangeListener(new ChangeListener() {
 			@Override
 			public void stateChanged(ChangeEvent e) {
@@ -95,13 +126,13 @@ public class View {
 		c.gridx = 2;
 		c.weightx = 0.2;
 		range1.add(label2Range1, c);
-		JSplitPane splitBedroom = new JSplitPane(JSplitPane.VERTICAL_SPLIT, textBedroom, range1);
+		splitBedroom = new JSplitPane(JSplitPane.VERTICAL_SPLIT, textBedroom, range1);
 
 		
 		JLabel textCost = new JLabel("Cost", JLabel.CENTER);
-		JLabel label1Range2 = new JLabel("3M", JLabel.CENTER);
-		JLabel label2Range2 = new JLabel("7M", JLabel.CENTER);
-		slidCost = new RangeSlider(SwingConstants.HORIZONTAL, 0, 9, 3, 7);
+		label1Range2 = new JLabel(rangeLowDef+"M", JLabel.CENTER);
+		label2Range2 = new JLabel(rangeUpDef+"M", JLabel.CENTER);
+		slidCost = new RangeSlider(SwingConstants.HORIZONTAL, rangeMin, rangeMax, rangeLowDef, rangeUpDef);
 		slidCost.addChangeListener(new ChangeListener() {
 			@Override
 			public void stateChanged(ChangeEvent e) {
@@ -157,11 +188,18 @@ public class View {
 	}
 
 	public void reset() {
-		System.out.println("reset");
+		slidDist1.setValue(slidDist1.getMaximum()/2);
+		slidDist2.setValue(slidDist2.getMaximum()/2);
+		
+		slidBed.setValue(rangeLowDef);
+		slidBed.setUpperValue(rangeUpDef);
+		
+		slidCost.setValue(rangeLowDef);
+		slidCost.setUpperValue(rangeUpDef);
 	}
 
 	public void quit() {
-		System.out.println("quit");
+		System.exit(0);
 	}
 
 	public void save() {

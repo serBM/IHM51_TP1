@@ -14,11 +14,12 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 public class View {
-	
+
 	RangeSlider slidDistA, slidDistB, slidBedroom, slidCost;
 	HashMap<Integer, Home> listHome = new HashMap<>();
+	MapArea map;
 	int nHome = 10;
-	
+
 	public View() {
 
 		// Create views swing UI components
@@ -52,18 +53,19 @@ public class View {
 		});
 
 		JLabel textDistA = new JLabel("Distance to A", JLabel.CENTER);
-		RangeSlider slidDistA = new RangeSlider(SwingConstants.HORIZONTAL, 0, 100, 25, 75);
+		slidDistA = new RangeSlider(SwingConstants.HORIZONTAL, 0, 100, 25, 75);
 		slidDistA.addChangeListener(new ChangeListener() {
 
 			@Override
 			public void stateChanged(ChangeEvent e) {
-				System.out.println("low : "+slidDistA.getValue());
+				refreshPrint();
+				System.out.println("low : " + slidDistA.getValue());
 			}
 		});
 		JLabel textDistB = new JLabel("Distance to B", JLabel.CENTER);
 		slidDistB = new RangeSlider(SwingConstants.HORIZONTAL, 0, 100, 25, 75);
 		JLabel textBedroom = new JLabel("Bedroom", JLabel.CENTER);
-		slidBedroom = new RangeSlider(SwingConstants.HORIZONTAL, 0, 100, 25, 75);
+		slidBedroom = new RangeSlider(SwingConstants.HORIZONTAL, 0, 10, 1, 9);
 		JLabel textCost = new JLabel("Cost", JLabel.CENTER);
 		slidCost = new RangeSlider(SwingConstants.HORIZONTAL, 0, 100, 25, 75);
 
@@ -76,28 +78,26 @@ public class View {
 		JSplitPane splitDistB = new JSplitPane(JSplitPane.VERTICAL_SPLIT, textDistB, slidDistB);
 		JSplitPane splitBedroom = new JSplitPane(JSplitPane.VERTICAL_SPLIT, textBedroom, slidBedroom);
 		JSplitPane splitCost = new JSplitPane(JSplitPane.VERTICAL_SPLIT, textCost, slidCost);
-		
 
 		JSplitPane splitSlid1 = new JSplitPane(JSplitPane.VERTICAL_SPLIT, splitDistA, splitDistB);
 		JSplitPane splitSlid2 = new JSplitPane(JSplitPane.VERTICAL_SPLIT, splitBedroom, splitCost);
 		JSplitPane splitSlid = new JSplitPane(JSplitPane.VERTICAL_SPLIT, splitSlid1, splitSlid2);
-		
+
 		JSplitPane splitLateral = new JSplitPane(JSplitPane.VERTICAL_SPLIT, splitButton, splitSlid);
 		splitSlid.setEnabled(false);
-
 		
-
-		MapArea map = new MapArea();
+		// Zone de map a gauche
+		map = new MapArea();
 		map.setPreferredSize(new Dimension(400, 400));
-		map.setLayout(new GridLayout(1, 1));
+		map.setLayout(new GridLayout());
 		
+		// Génération de maison aléatoire
 		for (int i = 0; i < nHome; i++) {
-			listHome.put(i, new Home("Maison " + i, (int) (Math.random()*400), (int) (Math.random()*400), (int) (Math.random()*10), (int) (Math.random()*10000)));
-
-			map.setLayout(new GridLayout(1, 1));
+			listHome.put(i, new Home("Maison " + i, (int) (Math.random() * 400), (int) (Math.random() * 400),
+					(int) (Math.random() * 10), (int) (Math.random() * 10000)));
 			map.add(listHome.get(i));
 		}
-		
+
 		// Display it all in a scrolling window and make the window appear
 		JFrame frame = new JFrame("TP1");
 		frame.setLayout(new BorderLayout());
@@ -107,6 +107,19 @@ public class View {
 		frame.pack();
 		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
+	}
+
+	protected void refreshPrint() {
+		for (int i = 0; i < nHome; i++) {
+			if (listHome.get(i) != null) {
+				if (listHome.get(i).getNbRoom() < slidBedroom.getValue()
+						|| listHome.get(i).getNbRoom() > slidBedroom.getUpperValue()) {
+					listHome.get(i).setVisible(false);
+					map.revalidate();
+					System.out.println("remove Maison " + i);
+				}
+			}
+		}
 	}
 
 	public void reset() {

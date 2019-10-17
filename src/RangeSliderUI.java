@@ -212,7 +212,7 @@ public class RangeSliderUI extends BasicSliderUI {
                 thumbMiddle = thumbLeft + halfThumbWidth;
                 int thumbRight = thumbLeft + thumbRect.width;
 
-                if (valueForXPosition(thumbRight) < ((RangeSlider) slider).getUpperValue()) {
+                if (valueForXPosition(thumbRight) <= ((RangeSlider) slider).getUpperValue()) {
                     setThumbLocation(thumbLeft, thumbRect.y);
                     slider.setValue(valueForXPosition(thumbMiddle));
                 }
@@ -236,7 +236,7 @@ public class RangeSliderUI extends BasicSliderUI {
 
                 thumbMiddle = thumbLeft + halfThumbWidth;
 
-                if (valueForXPosition(thumbLeft) > slider.getValue()) {
+                if (valueForXPosition(thumbLeft) >= slider.getValue()) {
                     setUpperThumbLocation(thumbLeft, upperThumb.y);
                     ((RangeSlider) slider).setUpperValue(valueForXPosition(thumbMiddle));
                 }

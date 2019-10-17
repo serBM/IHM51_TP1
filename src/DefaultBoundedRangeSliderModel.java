@@ -9,8 +9,8 @@ public class DefaultBoundedRangeSliderModel implements BoundedRangeModel {
 	private int upperValue = 0;
 	private int extent = 0;
 	private int upperExtent = 0;
-	private int min = 0;
-	private int max = 100;
+	private int min;
+	private int max;
 	private boolean isAdjusting = false;
 
 	protected EventListenerList listenerList = new EventListenerList();

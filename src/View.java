@@ -1,5 +1,7 @@
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -8,6 +10,8 @@ import java.util.HashMap;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JSlider;
 import javax.swing.JSplitPane;
 import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
@@ -19,7 +23,19 @@ public class View {
 	HashMap<Integer, Home> listHome = new HashMap<>();
 	MapArea map;
 	int nHome = 10;
-
+	int rangeMax = 9;
+	int rangeMin = 0;
+	int rangeLowDef = 3;
+	int rangeUpDef = 7;
+	JSlider slidDist1;
+	JSlider slidDist2;
+	JLabel label1Range1;
+	JLabel label2Range1;
+	RangeSlider slidBed;
+	JSplitPane splitBedroom;
+	JLabel label1Range2;
+	JLabel label2Range2;
+	
 	public View() {
 
 		// Create views swing UI components
@@ -52,32 +68,95 @@ public class View {
 			}
 		});
 
+		JSplitPane splitButtonR = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, resetButton, quitButton);
+		splitButtonR.setResizeWeight(.5d);
+		JSplitPane splitButtonL = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, saveButton, printButton);
+		splitButtonL.setResizeWeight(.5d);
+		JSplitPane splitButton = new JSplitPane(JSplitPane.VERTICAL_SPLIT, splitButtonR, splitButtonL);
+		
+	
 		JLabel textDistA = new JLabel("Distance to A", JLabel.CENTER);
-		slidDistA = new RangeSlider(SwingConstants.HORIZONTAL, 0, 100, 25, 75);
-		slidDistA.addChangeListener(new ChangeListener() {
 
+		slidDist1 = new JSlider();
+		JLabel dist1Lab = new JLabel("50", JLabel.CENTER);
+		slidDist1.addChangeListener(new ChangeListener() {
+			
 			@Override
 			public void stateChanged(ChangeEvent e) {
-				refreshPrint();
-				System.out.println("low : " + slidDistA.getValue());
+				dist1Lab.setText(slidDist1.getValue()+"");
 			}
 		});
+		
 		JLabel textDistB = new JLabel("Distance to B", JLabel.CENTER);
-		slidDistB = new RangeSlider(SwingConstants.HORIZONTAL, 0, 100, 25, 75);
+		slidDist2 = new JSlider();
+		JLabel dist2Lab = new JLabel("50", JLabel.CENTER);
+		slidDist2.addChangeListener(new ChangeListener() {
+			
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				dist2Lab.setText(slidDist2.getValue()+"");
+			}
+		});
+		
+		JSplitPane splitDistA1 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, dist1Lab, slidDist1);
+		JSplitPane splitDistA = new JSplitPane(JSplitPane.VERTICAL_SPLIT, textDistA, splitDistA1);
+		JSplitPane splitDistB1 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, dist2Lab, slidDist2);
+		JSplitPane splitDistB = new JSplitPane(JSplitPane.VERTICAL_SPLIT, textDistB, splitDistB1);
+		
 		JLabel textBedroom = new JLabel("Bedroom", JLabel.CENTER);
-		slidBedroom = new RangeSlider(SwingConstants.HORIZONTAL, 0, 10, 1, 9);
+		label1Range1 = new JLabel(rangeLowDef+"", JLabel.CENTER);
+		label2Range1 = new JLabel(rangeUpDef+"", JLabel.CENTER);
+		slidBed = new RangeSlider(SwingConstants.HORIZONTAL, rangeMin, rangeMax, rangeLowDef, rangeUpDef);
+		slidBed.addChangeListener(new ChangeListener() {
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				label1Range1.setText(slidBed.getValue() + "");
+				label2Range1.setText(slidBed.getUpperValue() + "");
+			}
+		});
+		
+		JPanel range1 = new JPanel(new GridBagLayout());
+		GridBagConstraints c = new GridBagConstraints();
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.weightx = 0.2;
+		c.gridx = 0;
+		range1.add(label1Range1, c);
+		c.gridx = 1;
+		c.weightx = 1;
+		range1.add(slidBed);
+		c.gridx = 2;
+		c.weightx = 0.2;
+		range1.add(label2Range1, c);
+		splitBedroom = new JSplitPane(JSplitPane.VERTICAL_SPLIT, textBedroom, range1);
+
+		
 		JLabel textCost = new JLabel("Cost", JLabel.CENTER);
-		slidCost = new RangeSlider(SwingConstants.HORIZONTAL, 0, 100, 25, 75);
+		label1Range2 = new JLabel(rangeLowDef+"M", JLabel.CENTER);
+		label2Range2 = new JLabel(rangeUpDef+"M", JLabel.CENTER);
+		slidCost = new RangeSlider(SwingConstants.HORIZONTAL, rangeMin, rangeMax, rangeLowDef, rangeUpDef);
+		slidCost.addChangeListener(new ChangeListener() {
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				label1Range2.setText(slidCost.getValue() + "M");
+				label2Range2.setText(slidCost.getUpperValue() + "M");
+			}
+		});
+		
+		JPanel range2 = new JPanel(new GridBagLayout());
+		GridBagConstraints c2 = new GridBagConstraints();
+		c2.fill = GridBagConstraints.HORIZONTAL;
+		c2.weightx = 0.2;
+		c2.gridx = 0;
+		range2.add(label1Range2, c2);
+		c2.gridx = 1;
+		c2.weightx = 1;
+		range2.add(slidCost);
+		c2.gridx = 2;
+		c2.weightx = 0.2;
+		range2.add(label2Range2, c2);
 
-		JSplitPane splitButtonR = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, resetButton, quitButton);
-		JSplitPane splitButtonL = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, saveButton, printButton);
-
-		JSplitPane splitButton = new JSplitPane(JSplitPane.VERTICAL_SPLIT, splitButtonR, splitButtonL);
-
-		JSplitPane splitDistA = new JSplitPane(JSplitPane.VERTICAL_SPLIT, textDistA, slidDistA);
-		JSplitPane splitDistB = new JSplitPane(JSplitPane.VERTICAL_SPLIT, textDistB, slidDistB);
-		JSplitPane splitBedroom = new JSplitPane(JSplitPane.VERTICAL_SPLIT, textBedroom, slidBedroom);
-		JSplitPane splitCost = new JSplitPane(JSplitPane.VERTICAL_SPLIT, textCost, slidCost);
+		JSplitPane splitCost = new JSplitPane(JSplitPane.VERTICAL_SPLIT, textCost, range2);
+	
 
 		JSplitPane splitSlid1 = new JSplitPane(JSplitPane.VERTICAL_SPLIT, splitDistA, splitDistB);
 		JSplitPane splitSlid2 = new JSplitPane(JSplitPane.VERTICAL_SPLIT, splitBedroom, splitCost);
@@ -88,13 +167,15 @@ public class View {
 		
 		// Zone de map a gauche
 		map = new MapArea();
-		map.setPreferredSize(new Dimension(400, 400));
+		map.setPreferredSize(new Dimension(400, 350));
 		map.setLayout(new GridLayout());
 		
 		// Génération de maison aléatoire
+
 		for (int i = 0; i < nHome; i++) {
-			listHome.put(i, new Home("Maison " + i, (int) (Math.random() * 400), (int) (Math.random() * 400),
+			listHome.put(i, new Home("Maison " + i, (int) (Math.random() * 400), (int) (Math.random() * 350),
 					(int) (Math.random() * 10), (int) (Math.random() * 10000)));
+
 			map.add(listHome.get(i));
 		}
 
@@ -123,11 +204,18 @@ public class View {
 	}
 
 	public void reset() {
-		System.out.println("reset");
+		slidDist1.setValue(slidDist1.getMaximum()/2);
+		slidDist2.setValue(slidDist2.getMaximum()/2);
+		
+		slidBed.setValue(rangeLowDef);
+		slidBed.setUpperValue(rangeUpDef);
+		
+		slidCost.setValue(rangeLowDef);
+		slidCost.setUpperValue(rangeUpDef);
 	}
 
 	public void quit() {
-		System.out.println("quit");
+		System.exit(0);
 	}
 
 	public void save() {
